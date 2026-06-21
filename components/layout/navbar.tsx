@@ -20,7 +20,7 @@ export function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="hover:text-primary focus-visible:text-accent rounded"
+                  className="rounded hover:text-primary focus-visible:text-accent"
                 >
                   {link.label}
                 </Link>

@@ -2,6 +2,8 @@
  * restaurant-image service
  */
 
-import { factories } from '@strapi/strapi';
+import { factories } from "@strapi/strapi"
 
-export default factories.createCoreService('api::restaurant-image.restaurant-image');
+export default factories.createCoreService(
+  "api::restaurant-image.restaurant-image"
+)

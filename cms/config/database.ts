@@ -1,9 +1,11 @@
-import path from 'path';
-import fs from "node:fs";
-import type { Core } from '@strapi/strapi';
+import path from "path"
+import fs from "node:fs"
+import type { Core } from "@strapi/strapi"
 
-const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
-  const sslEnabled = env.bool("DATABASE_SSL", true);
+const config = ({
+  env,
+}: Core.Config.Shared.ConfigParams): Core.Config.Database => {
+  const sslEnabled = env.bool("DATABASE_SSL", true)
 
   return {
     connection: {
@@ -20,12 +22,9 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
               ca: fs.readFileSync(
                 path.resolve(
                   process.cwd(),
-                  env(
-                    "DATABASE_SSL_CA_PATH",
-                    "certs/supabase-ca.crt",
-                  ),
+                  env("DATABASE_SSL_CA_PATH", "certs/supabase-ca.crt")
                 ),
-                "utf8",
+                "utf8"
               ),
               rejectUnauthorized: true,
             }
@@ -35,12 +34,9 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
         min: env.int("DATABASE_POOL_MIN", 0),
         max: env.int("DATABASE_POOL_MAX", 5),
       },
-      acquireConnectionTimeout: env.int(
-        "DATABASE_CONNECTION_TIMEOUT",
-        60000,
-      ),
+      acquireConnectionTimeout: env.int("DATABASE_CONNECTION_TIMEOUT", 60000),
     },
-  };
-};
+  }
+}
 
-export default config;
+export default config
