@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { createPageMetadata } from "@/lib/seo/metadata"
 
 const features = [
   {
@@ -24,6 +25,12 @@ const features = [
     description: "Check descriptions, menus and contact information.",
   },
 ]
+
+export const metadata = createPageMetadata({
+  title: "Dicover restaurants",
+  description: "Discover restaurants by city and cuisine and find somewhere worth visiting.",
+  path: "/",
+})
 
 export default function HomePage() {
   return (

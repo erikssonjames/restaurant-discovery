@@ -1,10 +1,12 @@
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
-import type { Metadata } from "next"
+import { createPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "About",
-  description: "About Restaurant Discovery.",
-}
+  description:
+    "Learn how Restaurant Discovery helps people find restaurants by city, cuisine, price, and menu.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

@@ -1,26 +1,20 @@
-import type { Metadata } from "next"
-
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 import { PaginationControls } from "@/components/restaurants/pagination-controls"
 import { RestaurantList } from "@/components/restaurants/restaurant-list"
 import { SearchFilters } from "@/components/search/search-filters"
 import { getRestaurants, type RestaurantFields } from "@/lib/strapi/restaurants"
 import { getCities, getCuisines } from "@/lib/strapi/taxonomy"
+import { createPageMetadata } from "@/lib/seo/metadata"
 
 export const dynamic = "force-dynamic"
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Search restaurants",
   description:
-    "Search and filter restaurants by city, cuisine, price, and availability.",
-  alternates: {
-    canonical: "/search",
-  },
-  robots: {
-    index: false,
-    follow: true,
-  },
-}
+    "Search and filter restaurants by city, cuisine, price, menu item, and availability.",
+  path: "/search",
+  noIndex: true,
+});
 
 const PAGE_SIZE = 6
 

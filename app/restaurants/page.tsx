@@ -6,6 +6,7 @@ import { RestaurantFilters } from "@/components/restaurants/restaurant-filters"
 import { RestaurantList } from "@/components/restaurants/restaurant-list"
 import { getRestaurants } from "@/lib/strapi/restaurants"
 import { getCities, getCuisines } from "@/lib/strapi/taxonomy"
+import { createPageMetadata } from "@/lib/seo/metadata"
 
 const PAGE_SIZE = 2
 
@@ -36,30 +37,30 @@ function readPage(value: string | string[] | undefined): number {
 export async function generateMetadata({
   searchParams,
 }: RestaurantsPageProps): Promise<Metadata> {
-  const parameters = await searchParams
+  const parameters = await searchParams;
 
-  const page = readPage(parameters.page)
-  const city = readParameter(parameters.city)
-  const cuisine = readParameter(parameters.cuisine)
-  const hasFilters = Boolean(city || cuisine)
+  const page = readPage(parameters.page);
+  const city = readParameter(parameters.city);
+  const cuisine = readParameter(parameters.cuisine);
+  const hasFilters = Boolean(city || cuisine);
 
-  return {
-    title: page > 1 ? `Restaurants – Page ${page}` : "Restaurants",
-    description: "Browse restaurants by city and cuisine.",
-    alternates: {
-      canonical: hasFilters
-        ? "/restaurants"
-        : page > 1
-          ? `/restaurants?page=${page}`
-          : "/restaurants",
-    },
-    robots: hasFilters
-      ? {
-          index: false,
-          follow: true,
-        }
-      : undefined,
-  }
+  const title =
+    page > 1
+      ? `Restaurants – Page ${page}`
+      : "Restaurants";
+
+  const canonicalPath =
+    hasFilters || page === 1
+      ? "/restaurants"
+      : `/restaurants?page=${page}`;
+
+  return createPageMetadata({
+    title,
+    description:
+      "Browse restaurants by city and cuisine and find somewhere new to eat.",
+    path: canonicalPath,
+    noIndex: hasFilters,
+  });
 }
 
 export default async function RestaurantsPage({
