@@ -1,6 +1,6 @@
-import Link from "next/link";
+import Link from "next/link"
 
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site"
 
 export function Footer() {
   return (
@@ -36,5 +36,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

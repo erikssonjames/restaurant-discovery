@@ -16,4 +16,4 @@ export const siteConfig = {
       href: "/contact",
     },
   ],
-} as const;
+} as const

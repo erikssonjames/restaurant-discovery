@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import Link from "next/link";
+import { Fragment } from "react"
+import Link from "next/link"
 
 import {
   Breadcrumb,
@@ -8,17 +8,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { siteConfig } from "@/lib/site";
+} from "@/components/ui/breadcrumb"
+import { siteConfig } from "@/lib/site"
 
 export type BreadcrumbEntry = {
-  label: string;
-  href: string;
-};
+  label: string
+  href: string
+}
 
 type BreadcrumbsProps = {
-  items: BreadcrumbEntry[];
-};
+  items: BreadcrumbEntry[]
+}
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   const structuredData = {
@@ -30,14 +30,14 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       name: item.label,
       item: new URL(item.href, siteConfig.url).toString(),
     })),
-  };
+  }
 
   return (
     <>
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => {
-            const current = index === items.length - 1;
+            const current = index === items.length - 1
 
             return (
               <Fragment key={item.href}>
@@ -53,7 +53,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                   )}
                 </BreadcrumbItem>
               </Fragment>
-            );
+            )
           })}
         </BreadcrumbList>
       </Breadcrumb>
@@ -61,12 +61,9 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(
-            /</g,
-            "\\u003c",
-          ),
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
         }}
       />
     </>
-  );
+  )
 }

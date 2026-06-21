@@ -15,6 +15,20 @@ export type CuisineSummary = StrapiDocument<{
   slug: string
 }>
 
+export type StrapiMedia = {
+  id: number
+  documentId: string
+  url: string
+  alternativeText: string | null
+  width: number | null
+  height: number | null
+}
+
+export type RestaurantImageSummary = StrapiDocument<{
+  altText: string
+  image: StrapiMedia | null
+}>
+
 export type RestaurantFields = {
   name: string
   slug: string
@@ -23,12 +37,40 @@ export type RestaurantFields = {
   priceRange: "budget" | "moderate" | "upscale" | "fine_dining"
   city: CitySummary | null
   cuisines: CuisineSummary[]
+  images: RestaurantImageSummary[]
 }
 
-export async function getRestaurants(
+export type GetRestaurantsOptions = {
+  page?: number
+  pageSize?: number
+  citySlug?: string
+  cuisineSlug?: string
+}
+
+export async function getRestaurants({
   page = 1,
-  pageSize = 10
-): Promise<StrapiCollectionResponse<RestaurantFields>> {
+  pageSize = 6,
+  citySlug,
+  cuisineSlug,
+}: GetRestaurantsOptions): Promise<StrapiCollectionResponse<RestaurantFields>> {
+  const filters: Record<string, unknown> = {}
+
+  if (citySlug) {
+    filters.city = {
+      slug: {
+        $eq: citySlug,
+      },
+    }
+  }
+
+  if (cuisineSlug) {
+    filters.cuisines = {
+      slug: {
+        $eq: cuisineSlug,
+      },
+    }
+  }
+
   return fetchFromStrapi<StrapiCollectionResponse<RestaurantFields>>(
     "restaurants",
     {
@@ -41,7 +83,16 @@ export async function getRestaurants(
           cuisines: {
             fields: ["name", "slug"],
           },
+          images: {
+            fields: ["altText"],
+            populate: {
+              image: {
+                fields: ["url", "alternativeText", "width", "height"],
+              },
+            },
+          },
         },
+        ...(Object.keys(filters).length > 0 ? { filters } : {}),
         pagination: {
           page,
           pageSize,

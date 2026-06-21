@@ -22,7 +22,7 @@ export default function AboutPage() {
         ]}
       />
 
-      <h1 className="text-4xl font-bold tracking-tight mt-8">About</h1>
+      <h1 className="mt-8 text-4xl font-bold tracking-tight">About</h1>
       <p className="mt-4 max-w-2xl text-muted-foreground">
         Restaurant Discovery helps people browse restaurants by city and
         cuisine.

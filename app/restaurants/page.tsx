@@ -1,28 +1,101 @@
 import type { Metadata } from "next"
 
-import { getRestaurants } from "@/lib/strapi/restaurants"
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
+import { PaginationControls } from "@/components/restaurants/pagination-controls"
+import { RestaurantFilters } from "@/components/restaurants/restaurant-filters"
+import { RestaurantList } from "@/components/restaurants/restaurant-list"
+import { getRestaurants } from "@/lib/strapi/restaurants"
+import { getCities, getCuisines } from "@/lib/strapi/taxonomy"
 
-export const metadata: Metadata = {
-  title: "Restaurants",
-  description: "Browse restaurants by city and cuisine.",
+const PAGE_SIZE = 2
+
+type RestaurantSearchParams = {
+  page?: string | string[]
+  city?: string | string[]
+  cuisine?: string | string[]
 }
 
-export default async function RestaurantsPage() {
-  const response = await getRestaurants()
+type RestaurantsPageProps = {
+  searchParams: Promise<RestaurantSearchParams>
+}
+
+function readParameter(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    return value[0] ?? ""
+  }
+
+  return value ?? ""
+}
+
+function readPage(value: string | string[] | undefined): number {
+  const parsed = Number.parseInt(readParameter(value), 10)
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 1
+}
+
+export async function generateMetadata({
+  searchParams,
+}: RestaurantsPageProps): Promise<Metadata> {
+  const parameters = await searchParams
+
+  const page = readPage(parameters.page)
+  const city = readParameter(parameters.city)
+  const cuisine = readParameter(parameters.cuisine)
+  const hasFilters = Boolean(city || cuisine)
+
+  return {
+    title: page > 1 ? `Restaurants – Page ${page}` : "Restaurants",
+    description: "Browse restaurants by city and cuisine.",
+    alternates: {
+      canonical: hasFilters
+        ? "/restaurants"
+        : page > 1
+          ? `/restaurants?page=${page}`
+          : "/restaurants",
+    },
+    robots: hasFilters
+      ? {
+          index: false,
+          follow: true,
+        }
+      : undefined,
+  }
+}
+
+export default async function RestaurantsPage({
+  searchParams,
+}: RestaurantsPageProps) {
+  const parameters = await searchParams
+
+  const page = readPage(parameters.page)
+  const citySlug = readParameter(parameters.city)
+  const cuisineSlug = readParameter(parameters.cuisine)
+
+  const [restaurants, cities, cuisines] = await Promise.all([
+    getRestaurants({
+      page,
+      pageSize: PAGE_SIZE,
+      citySlug,
+      cuisineSlug,
+    }),
+    getCities(),
+    getCuisines(),
+  ])
+
+  const pagination = restaurants.meta.pagination
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16">
-      <Breadcrumbs 
+    <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+      <Breadcrumbs
         items={[
           {
             label: "Home",
-            href: "/"
+            href: "/",
           },
           {
             label: "Restaurants",
-            href: "/restaurants"
-          }
+            href: "/restaurants",
+          },
         ]}
       />
 
@@ -30,49 +103,44 @@ export default async function RestaurantsPage() {
         <h1 className="text-4xl font-bold tracking-tight">Restaurants</h1>
 
         <p className="mt-4 text-muted-foreground">
-          Browse restaurants from the Strapi CMS.
+          Browse restaurants by city and cuisine.
         </p>
       </div>
 
-      {response.data.length === 0 ? (
-        <p className="mt-10 text-muted-foreground">
-          No restaurants have been published.
+      <div className="mt-8">
+        <RestaurantFilters
+          cities={cities.data.map((city) => ({
+            label: city.name,
+            value: city.slug,
+          }))}
+          cuisines={cuisines.data.map((cuisine) => ({
+            label: cuisine.name,
+            value: cuisine.slug,
+          }))}
+          selectedCity={citySlug}
+          selectedCuisine={cuisineSlug}
+        />
+      </div>
+
+      <div className="mt-8 flex items-center justify-between">
+        <p className="text-sm text-muted-foreground" aria-live="polite">
+          {pagination.total}{" "}
+          {pagination.total === 1 ? "restaurant" : "restaurants"}
         </p>
-      ) : (
-        <ul className="mt-10 space-y-4">
-          {response.data.map((restaurant) => (
-            <li key={restaurant.documentId} className="rounded-lg border p-5">
-              <h2 className="text-xl font-semibold">{restaurant.name}</h2>
+      </div>
 
-              <p className="mt-1 text-sm text-muted-foreground">
-                {restaurant.city?.name ?? "City not assigned"}
-              </p>
+      <div className="mt-6">
+        <RestaurantList restaurants={restaurants.data} />
+      </div>
 
-              <p className="mt-3">
-                {restaurant.cuisines.length > 0
-                  ? restaurant.cuisines
-                      .map((cuisine) => cuisine.name)
-                      .join(", ")
-                  : "Cuisine not assigned"}
-              </p>
-
-              <p className="mt-2 text-sm text-muted-foreground capitalize">
-                {restaurant.priceRange.replace("_", " ")}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <details className="mt-12">
-        <summary className="cursor-pointer font-medium">
-          View API response
-        </summary>
-
-        <pre className="mt-4 overflow-x-auto rounded-lg bg-muted p-4 text-xs">
-          {JSON.stringify(response, null, 2)}
-        </pre>
-      </details>
+      <div className="mt-10">
+        <PaginationControls
+          page={pagination.page}
+          pageCount={pagination.pageCount}
+          city={citySlug}
+          cuisine={cuisineSlug}
+        />
+      </div>
     </section>
   )
 }
