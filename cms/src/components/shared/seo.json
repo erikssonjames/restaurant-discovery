@@ -1,0 +1,65 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "SEO",
+    "icon": "eye"
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "string",
+      "minLength": 30,
+      "maxLength": 60,
+      "required": true
+    },
+    "metaDescription": {
+      "type": "text",
+      "minLength": 70,
+      "maxLength": 160,
+      "required": true
+    },
+    "canocialUrl": {
+      "type": "string"
+    },
+    "ogTitle": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "ogDescription": {
+      "type": "text",
+      "maxLength": 160
+    },
+    "ogImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "twitterTitle": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "twitterDescription": {
+      "type": "text",
+      "maxLength": 160
+    },
+    "twitterImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "structuredData": {
+      "type": "json"
+    },
+    "preventIndexing": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}
