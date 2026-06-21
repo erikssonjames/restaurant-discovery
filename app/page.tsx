@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 
 const features = [
   {

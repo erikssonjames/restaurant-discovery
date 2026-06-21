@@ -16,14 +16,9 @@ Users can browse restaurants by city and cuisine, view restaurant details, and s
 ## Project structure
 
 * `/app` — Pages and layouts
-* `/components` — Shared frontend components
+* `/components` — Shared interface components
+* `/lib/strapi` — Strapi API client and data types
 * `/cms` — Strapi CMS
-* `/cms/src/api` — Content types
-* `/cms/src/components` — Reusable CMS fields
-
-## Content
-
-The CMS stores cities, cuisines, restaurants, menu items, images, and SEO metadata. Local development data includes restaurants in Copenhagen and Aarhus.
 
 ## Running locally
 
@@ -34,7 +29,7 @@ npm install
 npm --prefix cms install
 ```
 
-Create `.env.local` and `cms/.env` using the matching example files.
+Create `.env.local` and `cms/.env` from the matching example files.
 
 Start the frontend:
 
@@ -42,7 +37,7 @@ Start the frontend:
 npm run dev
 ```
 
-Start Strapi in another terminal:
+Start the CMS in another terminal:
 
 ```bash
 npm run cms:dev

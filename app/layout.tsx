@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Metadata } from "next"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
+import { siteConfig } from "@/lib/site"
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -15,14 +16,12 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Restaurant Discovery",
-    template: "%s | Restaurant Discovery",
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "Discover restaurants by city and cuisine.",
+  description: siteConfig.description,
 }
 
 export default function RootLayout({

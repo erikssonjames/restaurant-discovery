@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { getRestaurants } from "@/lib/strapi/restaurants"
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 
 export const metadata: Metadata = {
   title: "Restaurants",
@@ -12,7 +13,20 @@ export default async function RestaurantsPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">
-      <div>
+      <Breadcrumbs 
+        items={[
+          {
+            label: "Home",
+            href: "/"
+          },
+          {
+            label: "Restaurants",
+            href: "/restaurants"
+          }
+        ]}
+      />
+
+      <div className="mt-8">
         <h1 className="text-4xl font-bold tracking-tight">Restaurants</h1>
 
         <p className="mt-4 text-muted-foreground">
