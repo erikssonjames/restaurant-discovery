@@ -47,6 +47,12 @@
         "images",
         "files"
       ]
+    },
+    "restaurant": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::restaurant.restaurant",
+      "inversedBy": "menuItems"
     }
   }
 }

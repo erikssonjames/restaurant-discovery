@@ -85,6 +85,12 @@
       "relation": "oneToMany",
       "target": "api::restaurant-image.restaurant-image",
       "mappedBy": "restaurant"
+    },
+    "menuItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::menu-item.menu-item",
+      "mappedBy": "restaurant"
     }
   }
 }
