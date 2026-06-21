@@ -1,19 +1,69 @@
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
-export default function Page() {
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+const features = [
+  {
+    title: "Browse by city",
+    description: "Find restaurants in the cities you are visiting.",
+  },
+  {
+    title: "Explore cuisines",
+    description: "Discover restaurants serving the food you enjoy.",
+  },
+  {
+    title: "View restaurant details",
+    description: "Check descriptions, menus and contact information.",
+  },
+]
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <>
+      <section className="border-b">
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
+          <Badge variant="secondary">Restaurant Discovery</Badge>
+
+          <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
+            Find your next restaurant.
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+            Browse restaurants by city and cuisine and find somewhere worth
+            visiting.
+          </p>
+
+          <div className="mt-8">
+            <Button asChild size="lg">
+              <Link href="/restaurants">Browse restaurants</Link>
+            </Button>
+          </div>
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="grid gap-6 md:grid-cols-3">
+          {features.map((feature) => (
+            <Card key={feature.title}>
+              <CardHeader>
+                <CardTitle>{feature.title}</CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                <CardDescription>{feature.description}</CardDescription>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   )
 }
