@@ -236,6 +236,14 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
             label: "Restaurants",
             href: "/restaurants",
           },
+          ...(restaurant.city
+            ? [
+                {
+                  label: restaurant.city.name,
+                  href: `/restaurants/city/${restaurant.city.slug}`,
+                },
+              ]
+            : []),
           {
             label: restaurant.name,
             href: `/restaurants/${restaurant.slug}`,
@@ -254,9 +262,14 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
           </Badge>
 
           {restaurant.cuisines.map((cuisine) => (
-            <Badge key={cuisine.documentId} variant="outline">
-              {cuisine.name}
-            </Badge>
+            <Link
+              key={cuisine.documentId}
+              href={`/restaurants/cuisine/${cuisine.slug}`}
+            >
+              <Badge variant="outline" className="hover:bg-muted">
+                {cuisine.name}
+              </Badge>
+            </Link>
           ))}
         </div>
 
@@ -267,7 +280,13 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
         {restaurant.city && (
           <p className="mt-3 flex items-center gap-2 text-muted-foreground">
             <MapPin className="size-4" aria-hidden="true" />
-            {restaurant.city.name}
+
+            <Link
+              href={`/restaurants/city/${restaurant.city.slug}`}
+              className="hover:text-foreground hover:underline"
+            >
+              {restaurant.city.name}
+            </Link>
           </p>
         )}
 
@@ -479,9 +498,14 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
 
                 <div className="mt-3 flex flex-wrap gap-2">
                   {restaurant.cuisines.map((cuisine) => (
-                    <Badge key={cuisine.documentId} variant="outline">
-                      {cuisine.name}
-                    </Badge>
+                    <Link
+                      key={cuisine.documentId}
+                      href={`/restaurants/cuisine/${cuisine.slug}`}
+                    >
+                      <Badge variant="outline" className="hover:bg-muted">
+                        {cuisine.name}
+                      </Badge>
+                    </Link>
                   ))}
                 </div>
               </div>

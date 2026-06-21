@@ -71,7 +71,16 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <CardDescription className="flex items-center gap-1">
           <MapPin className="size-4" aria-hidden="true" />
 
-          <span>{restaurant.city?.name ?? "City not assigned"}</span>
+          {restaurant.city ? (
+            <Link
+              href={`/restaurants/city/${restaurant.city.slug}`}
+              className="hover:text-foreground hover:underline"
+            >
+              {restaurant.city.name}
+            </Link>
+          ) : (
+            <span>City not assigned</span>
+          )}
         </CardDescription>
 
         <p className="text-sm text-muted-foreground">
@@ -84,9 +93,14 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <div className="flex flex-wrap gap-2" aria-label="Cuisines">
           {restaurant.cuisines.length > 0 ? (
             restaurant.cuisines.map((cuisine) => (
-              <Badge key={cuisine.documentId} variant="outline">
-                {cuisine.name}
-              </Badge>
+              <Link
+                key={cuisine.documentId}
+                href={`/restaurants/cuisine/${cuisine.slug}`}
+              >
+                <Badge variant="outline" className="hover:bg-muted">
+                  {cuisine.name}
+                </Badge>
+              </Link>
             ))
           ) : (
             <span className="text-sm text-muted-foreground">

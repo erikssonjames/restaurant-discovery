@@ -3,17 +3,20 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 type PaginationControlsProps = {
+  basePath?: string
   page: number
   pageCount: number
-  city: string
-  cuisine: string
+  city?: string
+  cuisine?: string
 }
 
 function createPageHref({
+  basePath,
   page,
   city,
   cuisine,
 }: {
+  basePath: string
   page: number
   city: string
   cuisine: string
@@ -34,14 +37,15 @@ function createPageHref({
 
   const query = params.toString()
 
-  return query ? `/restaurants?${query}` : "/restaurants"
+  return query ? `${basePath}?${query}` : basePath
 }
 
 export function PaginationControls({
+  basePath = "/restaurants",
   page,
   pageCount,
-  city,
-  cuisine,
+  city = "",
+  cuisine = "",
 }: PaginationControlsProps) {
   if (pageCount <= 1) {
     return null
@@ -56,6 +60,7 @@ export function PaginationControls({
         <Button variant="outline" asChild>
           <Link
             href={createPageHref({
+              basePath,
               page: page - 1,
               city,
               cuisine,
@@ -78,6 +83,7 @@ export function PaginationControls({
         <Button variant="outline" asChild>
           <Link
             href={createPageHref({
+              basePath,
               page: page + 1,
               city,
               cuisine,
