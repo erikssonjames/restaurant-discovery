@@ -19,6 +19,8 @@ import {
 } from "@/lib/strapi/restaurants"
 import { siteConfig } from "@/lib/site"
 import type { StrapiDocument } from "@/lib/strapi/types"
+import { createRestaurantStructuredData } from "@/lib/seo/structured-data"
+import { JsonLd } from "@/components/seo/json-ld"
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -35,14 +37,6 @@ const priceLabels: Record<RestaurantDetailFields["priceRange"], string> = {
   upscale: "Upscale",
   fine_dining: "Fine dining",
 }
-
-const schemaPriceRanges: Record<RestaurantDetailFields["priceRange"], string> =
-  {
-    budget: "$",
-    moderate: "$$",
-    upscale: "$$$",
-    fine_dining: "$$$$",
-  }
 
 const currencyFormatter = new Intl.NumberFormat("da-DK", {
   style: "currency",
@@ -145,62 +139,6 @@ function normalizeWebsite(website: string | null): string | null {
   return `https://${website}`
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-}
-
-function createStructuredData(
-  restaurant: StrapiDocument<RestaurantDetailFields>
-) {
-  const storedData = isObject(restaurant.seo?.structuredData)
-    ? restaurant.seo.structuredData
-    : {}
-
-  const images = restaurant.images
-    .map((entry) => getStrapiMediaUrl(entry.image?.url))
-    .filter((url): url is string => Boolean(url))
-
-  const website = normalizeWebsite(restaurant.website)
-
-  return {
-    ...storedData,
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    name: restaurant.name,
-    url: new URL(`/restaurants/${restaurant.slug}`, siteConfig.url).toString(),
-    ...(images.length > 0 && {
-      image: images,
-    }),
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: restaurant.address,
-      ...(restaurant.city && {
-        addressLocality: restaurant.city.name,
-      }),
-      ...(restaurant.postalCode && {
-        postalCode: restaurant.postalCode,
-      }),
-      addressCountry: "DK",
-    },
-    servesCuisine: restaurant.cuisines.map((cuisine) => cuisine.name),
-    priceRange: schemaPriceRanges[restaurant.priceRange],
-    ...(restaurant.phoneNumber && {
-      telephone: restaurant.phoneNumber,
-    }),
-    ...(website && {
-      sameAs: [website],
-    }),
-    ...(restaurant.aggregateRating &&
-      restaurant.aggregateRating.reviewCount > 0 && {
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: restaurant.aggregateRating.ratingValue,
-          reviewCount: restaurant.aggregateRating.reviewCount,
-        },
-      }),
-  }
-}
-
 export default async function RestaurantPage({ params }: RestaurantPageProps) {
   const { slug } = await params
   const restaurant = await getRestaurantBySlug(slug)
@@ -222,7 +160,16 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
       new Date(second.date).getTime() - new Date(first.date).getTime()
   )
 
-  const structuredData = createStructuredData(restaurant)
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce(
+          (total, review) => total + review.rating,
+          0,
+        ) / reviews.length
+      : null;
+
+  const structuredData =
+    createRestaurantStructuredData(restaurant);
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
@@ -290,17 +237,22 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
           </p>
         )}
 
-        {restaurant.aggregateRating &&
-          restaurant.aggregateRating.reviewCount > 0 && (
-            <p className="mt-3 flex items-center gap-2 text-sm">
-              <Star className="size-4 fill-current" aria-hidden="true" />
+        {averageRating !== null && (
+          <p className="mt-3 flex items-center gap-2 text-sm">
+            <Star
+              className="size-4 fill-current"
+              aria-hidden="true"
+            />
 
-              <span>
-                {restaurant.aggregateRating.ratingValue} from{" "}
-                {restaurant.aggregateRating.reviewCount} reviews
-              </span>
-            </p>
-          )}
+            <span>
+              {averageRating.toFixed(1)} from{" "}
+              {reviews.length}{" "}
+              {reviews.length === 1
+                ? "review"
+                : "reviews"}
+            </span>
+          </p>
+        )}
       </header>
 
       <div className="mt-8">
@@ -523,12 +475,7 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
         </aside>
       </div>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd data={structuredData} />
     </article>
   )
 }

@@ -10,6 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { createPageMetadata } from "@/lib/seo/metadata"
+import { JsonLd } from "@/components/seo/json-ld"
+import { createSiteStructuredData } from "@/lib/seo/structured-data"
 
 const features = [
   {
@@ -71,6 +73,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <JsonLd data={createSiteStructuredData()} />
     </>
   )
 }

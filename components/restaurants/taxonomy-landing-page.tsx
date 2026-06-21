@@ -9,8 +9,9 @@ import { LandingPageFilter } from "@/components/restaurants/landing-page-filter"
 import { PaginationControls } from "@/components/restaurants/pagination-controls"
 import { RestaurantList } from "@/components/restaurants/restaurant-list"
 import type { RestaurantFields } from "@/lib/strapi/restaurants"
-import { siteConfig } from "@/lib/site"
 import type { StrapiCollectionResponse } from "@/lib/strapi/types"
+import { createRestaurantListStructuredData } from "@/lib/seo/structured-data"
+import { JsonLd } from "../seo/json-ld"
 
 type FilterOption = {
   label: string
@@ -42,21 +43,11 @@ export function TaxonomyLandingPage({
 }: TaxonomyLandingPageProps) {
   const pagination = restaurants.meta.pagination
 
-  const itemList = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: title,
-    numberOfItems: pagination.total,
-    itemListElement: restaurants.data.map((restaurant, index) => ({
-      "@type": "ListItem",
-      position: (pagination.page - 1) * pagination.pageSize + index + 1,
-      name: restaurant.name,
-      url: new URL(
-        `/restaurants/${restaurant.slug}`,
-        siteConfig.url
-      ).toString(),
-    })),
-  }
+  const itemList = 
+    createRestaurantListStructuredData({
+      title,
+      restaurants,
+    })
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
@@ -100,12 +91,7 @@ export function TaxonomyLandingPage({
         />
       </div>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(itemList).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd data={itemList} />
     </section>
   )
 }

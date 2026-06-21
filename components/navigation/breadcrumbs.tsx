@@ -9,7 +9,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { siteConfig } from "@/lib/site"
+import { createBreadcrumbStructuredData } from "@/lib/seo/structured-data"
+import { JsonLd } from "../seo/json-ld"
 
 export type BreadcrumbEntry = {
   label: string
@@ -21,17 +22,6 @@ type BreadcrumbsProps = {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: item.label,
-      item: new URL(item.href, siteConfig.url).toString(),
-    })),
-  }
-
   return (
     <>
       <Breadcrumb>
@@ -58,11 +48,8 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
+      <JsonLd
+        data={createBreadcrumbStructuredData(items)}
       />
     </>
   )
