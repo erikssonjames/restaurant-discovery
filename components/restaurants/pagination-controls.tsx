@@ -8,6 +8,9 @@ type PaginationControlsProps = {
   pageCount: number
   city?: string
   cuisine?: string
+  query?: string
+  priceRange?: string
+  openOnly?: boolean
 }
 
 function createPageHref({
@@ -15,16 +18,26 @@ function createPageHref({
   page,
   city,
   cuisine,
+  query,
+  priceRange,
+  openOnly,
 }: {
   basePath: string
   page: number
   city: string
   cuisine: string
+  query: string
+  priceRange: string
+  openOnly: boolean
 }) {
   const params = new URLSearchParams()
 
   if (page > 1) {
     params.set("page", String(page))
+  }
+
+  if (query) {
+    params.set("q", query)
   }
 
   if (city) {
@@ -35,9 +48,17 @@ function createPageHref({
     params.set("cuisine", cuisine)
   }
 
-  const query = params.toString()
+  if (priceRange) {
+    params.set("price", priceRange)
+  }
 
-  return query ? `${basePath}?${query}` : basePath
+  if (openOnly) {
+    params.set("open", "true")
+  }
+
+  const queryString = params.toString()
+
+  return queryString ? `${basePath}?${queryString}` : basePath
 }
 
 export function PaginationControls({
@@ -46,9 +67,21 @@ export function PaginationControls({
   pageCount,
   city = "",
   cuisine = "",
+  query = "",
+  priceRange = "",
+  openOnly = false,
 }: PaginationControlsProps) {
   if (pageCount <= 1) {
     return null
+  }
+
+  const sharedParameters = {
+    basePath,
+    city,
+    cuisine,
+    query,
+    priceRange,
+    openOnly,
   }
 
   return (
@@ -60,10 +93,8 @@ export function PaginationControls({
         <Button variant="outline" asChild>
           <Link
             href={createPageHref({
-              basePath,
+              ...sharedParameters,
               page: page - 1,
-              city,
-              cuisine,
             })}
           >
             Previous
@@ -83,10 +114,8 @@ export function PaginationControls({
         <Button variant="outline" asChild>
           <Link
             href={createPageHref({
-              basePath,
+              ...sharedParameters,
               page: page + 1,
-              city,
-              cuisine,
             })}
           >
             Next

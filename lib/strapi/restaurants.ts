@@ -93,6 +93,10 @@ export type GetRestaurantsOptions = {
   pageSize?: number
   citySlug?: string
   cuisineSlug?: string
+  search?: string
+  priceRange?: RestaurantFields["priceRange"]
+  openOnly?: boolean
+  fresh?: boolean
 }
 
 export async function getRestaurants({
@@ -100,24 +104,108 @@ export async function getRestaurants({
   pageSize = 6,
   citySlug,
   cuisineSlug,
-}: GetRestaurantsOptions): Promise<StrapiCollectionResponse<RestaurantFields>> {
-  const filters: Record<string, unknown> = {}
+  search,
+  priceRange,
+  openOnly = false,
+  fresh = false,
+}: GetRestaurantsOptions = {}): Promise<
+  StrapiCollectionResponse<RestaurantFields>
+> {
+  const conditions: Array<Record<string, unknown>> = []
 
   if (citySlug) {
-    filters.city = {
-      slug: {
-        $eq: citySlug,
+    conditions.push({
+      city: {
+        slug: {
+          $eq: citySlug,
+        },
       },
-    }
+    })
   }
 
   if (cuisineSlug) {
-    filters.cuisines = {
-      slug: {
-        $eq: cuisineSlug,
+    conditions.push({
+      cuisines: {
+        slug: {
+          $eq: cuisineSlug,
+        },
       },
-    }
+    })
   }
+
+  if (priceRange) {
+    conditions.push({
+      priceRange: {
+        $eq: priceRange,
+      },
+    })
+  }
+
+  if (openOnly) {
+    conditions.push({
+      isOpen: {
+        $eq: true,
+      },
+    })
+  }
+
+  const searchTerm = search?.trim()
+
+  if (searchTerm) {
+    conditions.push({
+      $or: [
+        {
+          name: {
+            $containsi: searchTerm,
+          },
+        },
+        {
+          address: {
+            $containsi: searchTerm,
+          },
+        },
+        {
+          city: {
+            name: {
+              $containsi: searchTerm,
+            },
+          },
+        },
+        {
+          cuisines: {
+            name: {
+              $containsi: searchTerm,
+            },
+          },
+        },
+        {
+          menuItems: {
+            name: {
+              $containsi: searchTerm,
+            },
+          },
+        },
+        {
+          menuItems: {
+            description: {
+              $containsi: searchTerm,
+            },
+          },
+        },
+      ],
+    })
+  }
+
+  const caching = fresh
+    ? {
+        cache: "no-store" as const,
+      }
+    : {
+        next: {
+          revalidate: 3600,
+          tags: ["restaurants"],
+        },
+      }
 
   return fetchFromStrapi<StrapiCollectionResponse<RestaurantFields>>(
     "restaurants",
@@ -140,17 +228,21 @@ export async function getRestaurants({
             },
           },
         },
-        ...(Object.keys(filters).length > 0 ? { filters } : {}),
+        ...(conditions.length > 0
+          ? {
+              filters: {
+                $and: conditions,
+              },
+            }
+          : {}),
         pagination: {
           page,
           pageSize,
+          withCount: true,
         },
         sort: ["name:asc"],
       },
-      next: {
-        revalidate: 3600,
-        tags: ["restaurants"],
-      },
+      ...caching,
     }
   )
 }
