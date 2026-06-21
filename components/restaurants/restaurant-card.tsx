@@ -12,6 +12,7 @@ import {
 import { getStrapiMediaUrl } from "@/lib/strapi/media"
 import type { RestaurantFields } from "@/lib/strapi/restaurants"
 import type { StrapiDocument } from "@/lib/strapi/types"
+import Link from "next/link"
 
 const priceLabels: Record<RestaurantFields["priceRange"], string> = {
   budget: "Budget",
@@ -53,7 +54,14 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
-          <CardTitle>{restaurant.name}</CardTitle>
+          <CardTitle>
+            <Link
+              href={`/restaurants/${restaurant.slug}`}
+              className="underline-offset-4 hover:underline"
+            >
+              {restaurant.name}
+            </Link>
+          </CardTitle>
 
           <Badge variant="secondary">
             {priceLabels[restaurant.priceRange]}

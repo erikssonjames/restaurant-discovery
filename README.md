@@ -2,7 +2,7 @@
 
 A restaurant discovery website built with Next.js and Strapi.
 
-Users can browse restaurants by city and cuisine, filter the restaurant list, and move between paginated results.
+Users can browse restaurants by city and cuisine, filter the results, and view restaurant details, menus, images, and contact information.
 
 ## Tech stack
 
@@ -15,7 +15,7 @@ Users can browse restaurants by city and cuisine, filter the restaurant list, an
 
 ## Project structure
 
-* `/app` — Pages and layouts
+* `/app` — Pages and routes
 * `/components` — Shared interface components
 * `/lib/strapi` — Strapi API client and data types
 * `/cms` — Strapi CMS

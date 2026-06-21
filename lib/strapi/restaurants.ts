@@ -2,7 +2,7 @@ import type {
   StrapiCollectionResponse,
   StrapiDocument,
 } from "@/lib/strapi/types"
-
+import type { BlocksContent } from "@strapi/blocks-react-renderer"
 import { fetchFromStrapi } from "@/lib/strapi/api"
 
 export type CitySummary = StrapiDocument<{
@@ -38,6 +38,54 @@ export type RestaurantFields = {
   city: CitySummary | null
   cuisines: CuisineSummary[]
   images: RestaurantImageSummary[]
+}
+
+export type SeoFields = {
+  id: number
+  metaTitle: string | null
+  metaDescription: string | null
+  canonicalUrl: string | null
+  ogTitle: string | null
+  ogDescription: string | null
+  ogImage: StrapiMedia | null
+  twitterTitle: string | null
+  twitterDescription: string | null
+  twitterImage: StrapiMedia | null
+  structuredData: unknown
+  preventIndexing: boolean
+}
+
+export type AggregateRatingFields = {
+  id: number
+  ratingValue: number
+  reviewCount: number
+}
+
+export type MenuItemSummary = StrapiDocument<{
+  name: string
+  description: string | null
+  price: number | string
+  category: "starter" | "main" | "side" | "dessert" | "drink" | "other"
+  availability: boolean
+  image: StrapiMedia | null
+}>
+
+export type ReviewSummary = StrapiDocument<{
+  authorName: string
+  rating: number
+  comment: string | null
+  date: string
+}>
+
+export type RestaurantDetailFields = RestaurantFields & {
+  description: BlocksContent
+  website: string | null
+  phoneNumber: string | null
+  isOpen: boolean
+  menuItems: MenuItemSummary[]
+  reviews: ReviewSummary[]
+  aggregateRating: AggregateRatingFields | null
+  seo: SeoFields | null
 }
 
 export type GetRestaurantsOptions = {
@@ -105,4 +153,100 @@ export async function getRestaurants({
       },
     }
   )
+}
+
+export async function getRestaurantSlugs(): Promise<string[]> {
+  const response = await fetchFromStrapi<
+    StrapiCollectionResponse<{ slug: string }>
+  >("restaurants", {
+    query: {
+      fields: ["slug"],
+      pagination: {
+        page: 1,
+        pageSize: 100,
+      },
+      sort: ["slug:asc"],
+    },
+    next: {
+      revalidate: 3600,
+      tags: ["restaurant-slugs"],
+    },
+  })
+
+  return response.data.map((restaurant) => restaurant.slug)
+}
+
+export async function getRestaurantBySlug(
+  slug: string
+): Promise<StrapiDocument<RestaurantDetailFields> | null> {
+  const response = await fetchFromStrapi<
+    StrapiCollectionResponse<RestaurantDetailFields>
+  >("restaurants", {
+    query: {
+      fields: [
+        "name",
+        "slug",
+        "address",
+        "postalCode",
+        "description",
+        "priceRange",
+        "website",
+        "phoneNumber",
+        "isOpen",
+      ],
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      populate: {
+        city: {
+          fields: ["name", "slug"],
+        },
+        cuisines: {
+          fields: ["name", "slug"],
+        },
+        images: {
+          fields: ["altText"],
+          populate: {
+            image: {
+              fields: ["url", "alternativeText", "width", "height"],
+            },
+          },
+        },
+        menuItems: {
+          fields: ["name", "description", "price", "category", "availability"],
+          populate: {
+            image: {
+              fields: ["url", "alternativeText", "width", "height"],
+            },
+          },
+        },
+        reviews: {
+          fields: ["authorName", "rating", "comment", "date"],
+        },
+        aggregateRating: true,
+        seo: {
+          populate: {
+            ogImage: {
+              fields: ["url", "alternativeText", "width", "height"],
+            },
+            twitterImage: {
+              fields: ["url", "alternativeText", "width", "height"],
+            },
+          },
+        },
+      },
+      pagination: {
+        page: 1,
+        pageSize: 1,
+      },
+    },
+    next: {
+      revalidate: 3600,
+      tags: ["restaurants", `restaurant:${slug}`],
+    },
+  })
+
+  return response.data[0] ?? null
 }

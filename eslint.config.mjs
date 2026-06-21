@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "coverage/**",
     "cms/**",
+    "components/ui/**",
     "next-env.d.ts",
   ]),
 ]);
