@@ -47,6 +47,11 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+@keyframes company-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
@@ -129,4 +134,13 @@
   html {
     @apply font-sans;
     }
+}
+
+@layer components {
+  .landing-shell { @apply mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-14; }
+  .landing-display { font-family: Georgia, "Times New Roman", serif; }
+  .hero-image-wrap { @apply ring-1 ring-border; }
+  .company-track { animation: company-scroll 25s linear infinite; }
+  .company-fade:hover .company-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .company-track { animation: none; } }
 }

@@ -1,12 +1,12 @@
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
-import { createPageMetadata } from "@/lib/seo/metadata";
+import { createPageMetadata } from "@/lib/seo/metadata"
 
 export const metadata = createPageMetadata({
   title: "About",
   description:
     "Learn how Restaurant Discovery helps people find restaurants by city, cuisine, price, and menu.",
   path: "/about",
-});
+})
 
 export default function AboutPage() {
   return (

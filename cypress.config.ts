@@ -1,4 +1,4 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from "cypress"
 
 export default defineConfig({
   video: false,
@@ -11,7 +11,7 @@ export default defineConfig({
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     setupNodeEvents(_on, config) {
-      return config;
+      return config
     },
   },
-});
+})

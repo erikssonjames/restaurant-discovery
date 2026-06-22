@@ -1,12 +1,12 @@
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
-import { createPageMetadata } from "@/lib/seo/metadata";
+import { createPageMetadata } from "@/lib/seo/metadata"
 
 export const metadata = createPageMetadata({
   title: "Contact",
   description:
     "Contact Restaurant Discovery with questions, corrections, or restaurant information.",
   path: "/contact",
-});
+})
 
 export default function ContactPage() {
   return (

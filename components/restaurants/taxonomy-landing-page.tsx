@@ -43,11 +43,10 @@ export function TaxonomyLandingPage({
 }: TaxonomyLandingPageProps) {
   const pagination = restaurants.meta.pagination
 
-  const itemList = 
-    createRestaurantListStructuredData({
-      title,
-      restaurants,
-    })
+  const itemList = createRestaurantListStructuredData({
+    title,
+    restaurants,
+  })
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">

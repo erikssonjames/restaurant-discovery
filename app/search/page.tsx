@@ -14,7 +14,7 @@ export const metadata = createPageMetadata({
     "Search and filter restaurants by city, cuisine, price, menu item, and availability.",
   path: "/search",
   noIndex: true,
-});
+})
 
 const PAGE_SIZE = 6
 

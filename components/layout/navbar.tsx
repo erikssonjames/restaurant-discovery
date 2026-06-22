@@ -11,63 +11,72 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { siteConfig } from "@/lib/site"
-import { LinkActiveButton } from "./link-active-button"
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 text-foreground backdrop-blur">
+      <div className="landing-shell flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="font-semibold tracking-tight"
+          className="landing-display text-[1.65rem] tracking-[-0.055em]"
           aria-label={`${siteConfig.name} home`}
         >
-          {siteConfig.name}
+          BiteAtlas
         </Link>
-
         <nav
           aria-label="Primary navigation"
-          className="hidden items-center gap-1 md:flex"
+          className="hidden items-center gap-10 text-sm md:flex"
         >
-          {siteConfig.navigation.map((item) => (
-            <LinkActiveButton key={item.href} item={item} />
-          ))}
+          <Link
+            href="/restaurants"
+            className="transition-opacity hover:opacity-55"
+          >
+            Discover
+          </Link>
+          <Link href="/search" className="transition-opacity hover:opacity-55">
+            Cities
+          </Link>
+          <Link href="/about" className="transition-opacity hover:opacity-55">
+            About
+          </Link>
         </nav>
-
+        <Button asChild className="hidden md:inline-flex">
+          <Link href="/restaurants">Explore restaurants</Link>
+        </Button>
         <Sheet>
           <SheetTrigger asChild>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
             >
               <Menu aria-hidden="true" />
               <span className="sr-only">Open navigation</span>
             </Button>
           </SheetTrigger>
-
-          <SheetContent side="right" className="w-80">
+          <SheetContent side="right" className="w-80 bg-background">
             <SheetHeader>
-              <SheetTitle>Navigation</SheetTitle>
+              <SheetTitle className="landing-display text-2xl">
+                BiteAtlas
+              </SheetTitle>
             </SheetHeader>
-
             <nav
               aria-label="Mobile navigation"
               className="mt-8 flex flex-col gap-2"
             >
-              <SheetClose asChild>
-                <Link
-                  href="/"
-                  className="rounded-md px-3 py-3 font-semibold hover:bg-muted"
-                >
-                  Home
-                </Link>
-              </SheetClose>
-
-              {siteConfig.navigation.map((item) => (
+              {[
+                { href: "/restaurants", label: "Discover" },
+                { href: "/search", label: "Cities" },
+                { href: "/about", label: "About" },
+              ].map((item) => (
                 <SheetClose asChild key={item.href}>
-                  <LinkActiveButton item={item} />
+                  <Link
+                    href={item.href}
+                    className="border-b border-border py-4 text-lg"
+                  >
+                    {item.label}
+                  </Link>
                 </SheetClose>
               ))}
             </nav>

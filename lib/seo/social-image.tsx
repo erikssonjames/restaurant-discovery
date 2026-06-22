@@ -1,6 +1,6 @@
-import { ImageResponse } from "next/og";
+import { ImageResponse } from "next/og"
 
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site"
 
 export function createSocialImage() {
   return new ImageResponse(
@@ -61,6 +61,6 @@ export function createSocialImage() {
     {
       width: 1200,
       height: 630,
-    },
-  );
+    }
+  )
 }

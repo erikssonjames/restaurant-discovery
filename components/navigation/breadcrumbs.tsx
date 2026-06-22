@@ -48,9 +48,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <JsonLd
-        data={createBreadcrumbStructuredData(items)}
-      />
+      <JsonLd data={createBreadcrumbStructuredData(items)} />
     </>
   )
 }

@@ -1,9 +1,9 @@
-import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next"
 
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site"
 
 export default function robots(): MetadataRoute.Robots {
-  const origin = new URL(siteConfig.url).origin;
+  const origin = new URL(siteConfig.url).origin
 
   return {
     rules: {
@@ -12,5 +12,5 @@ export default function robots(): MetadataRoute.Robots {
     },
     sitemap: `${origin}/sitemap.xml`,
     host: origin,
-  };
+  }
 }

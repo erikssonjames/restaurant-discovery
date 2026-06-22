@@ -18,7 +18,6 @@ import {
   type RestaurantDetailFields,
 } from "@/lib/strapi/restaurants"
 import { siteConfig } from "@/lib/site"
-import type { StrapiDocument } from "@/lib/strapi/types"
 import { createRestaurantStructuredData } from "@/lib/seo/structured-data"
 import { JsonLd } from "@/components/seo/json-ld"
 
@@ -162,14 +161,11 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
 
   const averageRating =
     reviews.length > 0
-      ? reviews.reduce(
-          (total, review) => total + review.rating,
-          0,
-        ) / reviews.length
-      : null;
+      ? reviews.reduce((total, review) => total + review.rating, 0) /
+        reviews.length
+      : null
 
-  const structuredData =
-    createRestaurantStructuredData(restaurant);
+  const structuredData = createRestaurantStructuredData(restaurant)
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
@@ -239,17 +235,11 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
 
         {averageRating !== null && (
           <p className="mt-3 flex items-center gap-2 text-sm">
-            <Star
-              className="size-4 fill-current"
-              aria-hidden="true"
-            />
+            <Star className="size-4 fill-current" aria-hidden="true" />
 
             <span>
-              {averageRating.toFixed(1)} from{" "}
-              {reviews.length}{" "}
-              {reviews.length === 1
-                ? "review"
-                : "reviews"}
+              {averageRating.toFixed(1)} from {reviews.length}{" "}
+              {reviews.length === 1 ? "review" : "reviews"}
             </span>
           </p>
         )}

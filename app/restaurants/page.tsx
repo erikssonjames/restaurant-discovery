@@ -37,22 +37,17 @@ function readPage(value: string | string[] | undefined): number {
 export async function generateMetadata({
   searchParams,
 }: RestaurantsPageProps): Promise<Metadata> {
-  const parameters = await searchParams;
+  const parameters = await searchParams
 
-  const page = readPage(parameters.page);
-  const city = readParameter(parameters.city);
-  const cuisine = readParameter(parameters.cuisine);
-  const hasFilters = Boolean(city || cuisine);
+  const page = readPage(parameters.page)
+  const city = readParameter(parameters.city)
+  const cuisine = readParameter(parameters.cuisine)
+  const hasFilters = Boolean(city || cuisine)
 
-  const title =
-    page > 1
-      ? `Restaurants – Page ${page}`
-      : "Restaurants";
+  const title = page > 1 ? `Restaurants – Page ${page}` : "Restaurants"
 
   const canonicalPath =
-    hasFilters || page === 1
-      ? "/restaurants"
-      : `/restaurants?page=${page}`;
+    hasFilters || page === 1 ? "/restaurants" : `/restaurants?page=${page}`
 
   return createPageMetadata({
     title,
@@ -60,7 +55,7 @@ export async function generateMetadata({
       "Browse restaurants by city and cuisine and find somewhere new to eat.",
     path: canonicalPath,
     noIndex: hasFilters,
-  });
+  })
 }
 
 export default async function RestaurantsPage({

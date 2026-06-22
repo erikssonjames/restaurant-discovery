@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata } from "next"
 
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site"
 
 type CreatePageMetadataOptions = {
-  title: string;
-  description: string;
-  path: string;
-  noIndex?: boolean;
-  absoluteTitle?: boolean;
-};
+  title: string
+  description: string
+  path: string
+  noIndex?: boolean
+  absoluteTitle?: boolean
+}
 
 export function createPageMetadata({
   title,
@@ -17,7 +17,7 @@ export function createPageMetadata({
   noIndex = false,
   absoluteTitle = false,
 }: CreatePageMetadataOptions): Metadata {
-  const canonicalUrl = new URL(path, siteConfig.url).toString();
+  const canonicalUrl = new URL(path, siteConfig.url).toString()
 
   return {
     title: absoluteTitle
@@ -53,5 +53,5 @@ export function createPageMetadata({
       title,
       description,
     },
-  };
+  }
 }

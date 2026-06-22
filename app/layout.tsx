@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
   },
-};
+}
 
 export default function RootLayout({
   children,
