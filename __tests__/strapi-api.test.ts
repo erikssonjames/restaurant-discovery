@@ -65,6 +65,7 @@ describe("fetchFromStrapi", () => {
 
     expect(headers.get("Authorization")).toBe("Bearer test-token")
     expect(headers.get("Accept")).toBe("application/json")
+    expect(options?.next?.tags).toContain("strapi-content")
   })
 
   it("throws StrapiApiError for unsuccessful responses", async () => {

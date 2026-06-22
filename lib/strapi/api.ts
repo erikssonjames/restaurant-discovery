@@ -2,6 +2,10 @@ import "server-only"
 
 import qs from "qs"
 
+// Every request made through this client shares a tag so a Strapi webhook can
+// invalidate the cached CMS content without rebuilding the frontend.
+export const STRAPI_CACHE_TAG = "strapi-content"
+
 export type StrapiFetchOptions = RequestInit & {
   query?: Record<string, unknown>
   next?: {
@@ -45,7 +49,7 @@ export async function fetchFromStrapi<T>(
 
   const apiToken = getRequiredEnvironmentVariable("STRAPI_API_TOKEN")
 
-  const { query, headers, ...requestOptions } = options
+  const { query, headers, next, ...requestOptions } = options
 
   const normalizedEndpoint = endpoint.replace(/^\/+/, "")
 
@@ -70,6 +74,10 @@ export async function fetchFromStrapi<T>(
     response = await fetch(url, {
       ...requestOptions,
       headers: requestHeaders,
+      next: {
+        ...next,
+        tags: [...new Set([STRAPI_CACHE_TAG, ...(next?.tags ?? [])])],
+      },
     })
   } catch (error) {
     throw new Error(`Could not connect to Strapi at ${url}`, {
