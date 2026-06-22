@@ -11,7 +11,10 @@ export function getStrapiMediaUrl(
     return path
   }
 
-  const baseUrl = process.env.STRAPI_API_URL ?? "http://localhost:1337"
+  const publicUrl =
+    process.env.NEXT_PUBLIC_STRAPI_URL ??
+    process.env.STRAPI_API_URL ??
+    "http://localhost:1337";
 
-  return new URL(path, baseUrl).toString()
+  return new URL(path, publicUrl).toString()
 }

@@ -1,13 +1,26 @@
 import type { NextConfig } from "next"
 
-const strapiUrl = new URL(process.env.STRAPI_API_URL || "http://localhost:1337")
+const strapiUrl = new URL(
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+    process.env.STRAPI_API_URL ??
+    "http://localhost:1337",
+);
+
+const protocol = strapiUrl.protocol.replace(":", "") as
+  | "http"
+  | "https";
+
+const isLocalStrapi = ["localhost", "127.0.0.1"].includes(
+  strapiUrl.hostname,
+);
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
-    dangerouslyAllowLocalIP: true,
+    dangerouslyAllowLocalIP: isLocalStrapi,
     remotePatterns: [
       {
-        protocol: strapiUrl.protocol.replace(":", "") as "http" | "https",
+        protocol,
         hostname: strapiUrl.hostname,
         port: strapiUrl.port,
         pathname: "/uploads/**",

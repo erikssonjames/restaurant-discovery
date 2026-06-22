@@ -31,5 +31,11 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "cms"]
+  "exclude": [
+    "node_modules", 
+    "cms",
+    "cypress",
+    "cypress.config.ts",
+    "coverage"
+  ]
 }
