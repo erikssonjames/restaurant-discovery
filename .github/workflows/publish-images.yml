@@ -111,8 +111,8 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_SITE_URL=https://restaurants.jameseriksson.com
-            NEXT_PUBLIC_STRAPI_URL=https://restaurants.jameseriksson.com
-            STRAPI_API_URL=https://restaurants.jameseriksson.com
+            NEXT_PUBLIC_STRAPI_URL=https://cms-restaurants.jameseriksson.com
+            STRAPI_API_URL=https://cms-restaurants.jameseriksson.com
           secrets: |
             strapi_api_token=${{ secrets.STRAPI_API_TOKEN }}
           tags: |
